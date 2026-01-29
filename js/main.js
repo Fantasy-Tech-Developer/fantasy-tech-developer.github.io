@@ -1,109 +1,93 @@
-/* =========================================================
-   Fantasy Tech Developer - main.js
-   Purpose: lightweight UI interactions for GitHub Pages
-   Features:
-   1) Smooth scroll for internal anchors
-   2) Active nav link highlight on scroll (ScrollSpy)
-   3) Sticky header shadow on scroll
-   4) Back-to-top button
-   5) Simple reveal-on-scroll animation
-   ========================================================= */
-
+// Fantasy Tech Developer — main.js
 document.addEventListener("DOMContentLoaded", () => {
-  // ---------- Config ----------
-  const header = document.querySelector(".navbar");
-  const navLinks = Array.from(document.querySelectorAll(".navbar a[href^='#']"));
-  const sections = navLinks
-    .map((a) => document.querySelector(a.getAttribute("href")))
-    .filter(Boolean);
+  // Footer year
+  const yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // ---------- 1) Smooth scroll ----------
-  navLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
+  // Mobile menu toggle
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileNav = document.getElementById("mobileNav");
+
+  function setMenu(open) {
+    if (!mobileNav || !menuBtn) return;
+    mobileNav.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    mobileNav.setAttribute("aria-hidden", open ? "false" : "true");
+  }
+
+  if (menuBtn && mobileNav) {
+    menuBtn.addEventListener("click", () => {
+      const isOpen = mobileNav.classList.contains("open");
+      setMenu(!isOpen);
+    });
+
+    // close on link click
+    mobileNav.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => setMenu(false));
+    });
+  }
+
+  // Smooth scroll for anchors
+  const header = document.querySelector(".header");
+  const headerH = () => (header ? header.offsetHeight : 0);
+
+  document.querySelectorAll("a[href^='#']").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      const id = a.getAttribute("href");
+      const target = document.querySelector(id);
+      if (!target) return;
+
       e.preventDefault();
-      const targetId = link.getAttribute("href");
-      const targetEl = document.querySelector(targetId);
-      if (!targetEl) return;
-
-      const headerH = header ? header.offsetHeight : 0;
-      const top = targetEl.getBoundingClientRect().top + window.pageYOffset - headerH - 12;
-
+      const top = target.getBoundingClientRect().top + window.pageYOffset - headerH() - 12;
       window.scrollTo({ top, behavior: "smooth" });
-      history.replaceState(null, "", targetId);
+      history.replaceState(null, "", id);
     });
   });
 
-  // ---------- 2) ScrollSpy (active nav link) ----------
-  function setActiveLink() {
-    const scrollPos = window.scrollY + (header ? header.offsetHeight : 0) + 60;
+  // Back-to-top button
+  const toTop = document.getElementById("toTop");
+  const toggleTop = () => {
+    if (!toTop) return;
+    toTop.classList.toggle("show", window.scrollY > 550);
+  };
+  toggleTop();
+  window.addEventListener("scroll", toggleTop);
 
-    let currentId = null;
-    for (const section of sections) {
-      const top = section.offsetTop;
-      const bottom = top + section.offsetHeight;
-      if (scrollPos >= top && scrollPos < bottom) {
-        currentId = `#${section.id}`;
-        break;
-      }
-    }
-
-    navLinks.forEach((a) => {
-      const isActive = a.getAttribute("href") === currentId;
-      a.classList.toggle("active", isActive);
+  if (toTop) {
+    toTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 
-  // ---------- 3) Header shadow on scroll ----------
-  function updateHeaderShadow() {
-    if (!header) return;
-    header.classList.toggle("scrolled", window.scrollY > 8);
+  // Contact form -> mailto (no backend needed)
+  const form = document.getElementById("contactForm");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+
+      const name = (fd.get("name") || "").toString().trim();
+      const email = (fd.get("email") || "").toString().trim();
+      const service = (fd.get("service") || "").toString().trim();
+      const message = (fd.get("message") || "").toString().trim();
+
+      const subject = encodeURIComponent(`[Project Inquiry] ${service} — ${name}`);
+      const body = encodeURIComponent(
+`Hello Fantasy Tech Developer,
+
+Name: ${name}
+Email: ${email}
+Service: ${service}
+
+Project details:
+${message}
+
+Thanks!`
+      );
+
+      // Change to your real email if needed
+      const to = "fantasytechdeveloper@gmail.com";
+      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    });
   }
-
-  // ---------- 4) Back-to-top button ----------
-  const backToTop = document.createElement("button");
-  backToTop.type = "button";
-  backToTop.className = "back-to-top";
-  backToTop.setAttribute("aria-label", "Back to top");
-  backToTop.textContent = "↑";
-  document.body.appendChild(backToTop);
-
-  backToTop.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  function toggleBackToTop() {
-    backToTop.classList.toggle("show", window.scrollY > 500);
-  }
-
-  // ---------- 5) Reveal on scroll (simple animation) ----------
-  const revealTargets = document.querySelectorAll("section, .grid > div, footer");
-  revealTargets.forEach((el) => el.classList.add("reveal"));
-
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("reveal--visible");
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
-
-  revealTargets.forEach((el) => io.observe(el));
-
-  // ---------- Initial run + listeners ----------
-  setActiveLink();
-  updateHeaderShadow();
-  toggleBackToTop();
-
-  window.addEventListener("scroll", () => {
-    setActiveLink();
-    updateHeaderShadow();
-    toggleBackToTop();
-  });
-
-  window.addEventListener("resize", setActiveLink);
 });
-
