@@ -366,54 +366,34 @@ a{ color: inherit; }
 .step p{ margin: 0; color: var(--muted); }
 
 .person{
+    text-align: center;     /* 让 h3 / p 居中 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* 让 avatar 居中 */
   padding: 18px;
   border-radius: var(--radius);
   background: rgba(255,255,255,.04);
   border: 1px solid rgba(255,255,255,.10);
 }
 
-.avatar{
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  display:grid; place-items:center;
-  font-weight: 900;
-  background: linear-gradient(135deg, rgba(102,227,255,.25), rgba(155,123,255,.25));
-  border: 1px solid rgba(255,255,255,.14);
-  margin-bottom: 10px;
-  overflow: hidden;
+.avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
 
+    display: grid;
+    place-items: center;
+
+    background: linear-gradient(135deg, rgba(102,227,255,.25), rgba(155,123,255,.25));
+    border: 1px solid rgba(255,255,255,.14);
+    margin-bottom: 10px;
 }
+
 .avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;      /* 保持比例，裁剪多余部分 */
-}
-
-.avatar-mask {
-  width: 300px;
-  height: 300px;
-  position: relative;
-  background: #19212E;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-/* 图片 */
-.avatar-mask img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 遮挡层 */
-.avatar-mask::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #19212E;
-
-  /* 中间透明区域（圆形） */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 核心 */
 }
 
 .person h3{ margin: 0 0 6px; font-size: 16px; }
