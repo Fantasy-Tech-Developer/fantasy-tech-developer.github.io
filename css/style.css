@@ -366,10 +366,10 @@ a{ color: inherit; }
 .step p{ margin: 0; color: var(--muted); }
 
 .person{
-    text-align: center;     /* 让 h3 / p 居中 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;    /* 让 avatar 居中 */
+  text-align: center;     /* 让 h3 / p 居中 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;    /* 让 avatar 居中 */
   padding: 18px;
   border-radius: var(--radius);
   background: rgba(255,255,255,.04);
@@ -384,7 +384,6 @@ a{ color: inherit; }
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, rgba(102,227,255,.25), rgba(155,123,255,.25));
   border: 1px solid rgba(255,255,255,.14);
   margin-bottom: 10px;
 }
@@ -395,8 +394,6 @@ a{ color: inherit; }
   height: 100%;
   object-fit: cover;
 }
-
-
 
 .person h3{ margin: 0 0 6px; font-size: 16px; }
 .person p{ margin: 0; color: var(--muted); }
